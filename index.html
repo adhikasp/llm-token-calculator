@@ -23,13 +23,47 @@
       </select>
     </div>
 
+    <div class="mode-switch">
+      <label>
+        <input type="radio" name="mode" value="simple" checked> Simple
+      </label>
+      <label>
+        <input type="radio" name="mode" value="advanced"> Advanced
+      </label>
+    </div>
+
+    <div id="simple-mode">
+      <div>
+        <label for="inputWordCount">Input Word Count:</label>
+        <input type="number" id="inputWordCount" min="1" value="100">
+      </div>
+      <div>
+        <label for="outputWordCount">Output Word Count:</label>
+        <input type="number" id="outputWordCount" min="1" placeholder="Defaults to input count">
+      </div>
+    </div>
+
+    <div id="advanced-mode" style="display: none;">
+      <div>
+        <label for="inputText">Input Text:</label>
+        <textarea id="inputText" placeholder="Enter your input text here..."></textarea>
+      </div>
+      
+      <div>
+        <label for="outputText">Output Text:</label>
+        <textarea id="outputText" placeholder="Enter expected output text here..."></textarea>
+      </div>
+    </div>
+
     <div>
-      <label for="text">Enter Text:</label>
-      <textarea id="text" placeholder="Enter your text here..."></textarea>
+      <label for="multiplier">Number of Calls:</label>
+      <input type="number" id="multiplier" min="1" value="1">
     </div>
 
     <div class="results">
-      <div class="result-item">Token Count: <span id="tokenCount">0</span></div>
+      <div class="result-item">Input Token Count: <span id="inputTokenCount">0</span></div>
+      <div class="result-item">Output Token Count: <span id="outputTokenCount">0</span></div>
+      <div class="result-item">Total Token Count: <span id="totalTokenCount">0</span></div>
       <div class="result-item">Input Cost: $<span id="inputCost">0.00</span></div>
       <div class="result-item">Output Cost: $<span id="outputCost">0.00</span></div>
       <div class="result-item">Total Cost: $<span id="totalCost">0.00</span></div>
@@ -83,33 +117,54 @@
     };
 
     function approximateTokenCount(text) {
+      if (!text) return 0;
       const E = 2.7182818284590;
       const SAFETY_MARGIN = 2;
+      const wordsPerToken = 0.75; // Assuming average of 0.75 words per token
       
-      // Use 1/e as the conservative constant of proportionality
-      const tokenCount = Math.ceil((text.length / E) + SAFETY_MARGIN);
-      return tokenCount;
+      if (typeof text === 'number') {
+        // If input is word count
+        return Math.ceil((text / wordsPerToken) + SAFETY_MARGIN);
+      } else {
+        // If input is text
+        return Math.ceil((text.length / E) + SAFETY_MARGIN);
+      }
     }
 
     function updateTokenCount() {
-      const text = document.getElementById('text').value;
       const model = document.getElementById('model').value;
+      const multiplier = parseInt(document.getElementById('multiplier').value) || 1;
+      const mode = document.querySelector('input[name="mode"]:checked').value;
       
-      if (!text) {
-        document.getElementById('tokenCount').textContent = '0';
-        document.getElementById('inputCost').textContent = '0.00';
-        document.getElementById('outputCost').textContent = '0.00';
-        document.getElementById('totalCost').textContent = '0.00';
-        return;
+      let inputTokens = 0;
+      let outputTokens = 0;
+
+      if (mode === 'simple') {
+        const inputWordCount = parseInt(document.getElementById('inputWordCount').value) || 0;
+        const outputWordCountElem = document.getElementById('outputWordCount');
+        const outputWordCount = outputWordCountElem.value ? parseInt(outputWordCountElem.value) : inputWordCount;
+        
+        inputTokens = approximateTokenCount(inputWordCount);
+        outputTokens = approximateTokenCount(outputWordCount);
+      } else {
+        const inputText = document.getElementById('inputText').value;
+        const outputText = document.getElementById('outputText').value;
+        inputTokens = approximateTokenCount(inputText);
+        outputTokens = approximateTokenCount(outputText);
       }
 
-      const tokenCount = approximateTokenCount(text);
+      // Apply multiplier
+      inputTokens *= multiplier;
+      outputTokens *= multiplier;
+      
       const pricing = modelPricing[model];
-      const inputCost = (tokenCount / pricing.per) * pricing.input;
-      const outputCost = (tokenCount / pricing.per) * pricing.output;
+      const inputCost = (inputTokens / pricing.per) * pricing.input;
+      const outputCost = (outputTokens / pricing.per) * pricing.output;
       const totalCost = inputCost + outputCost;
       
-      document.getElementById('tokenCount').textContent = tokenCount;
+      document.getElementById('inputTokenCount').textContent = inputTokens;
+      document.getElementById('outputTokenCount').textContent = outputTokens;
+      document.getElementById('totalTokenCount').textContent = inputTokens + outputTokens;
       document.getElementById('inputCost').textContent = inputCost.toFixed(4);
       document.getElementById('outputCost').textContent = outputCost.toFixed(4);
       document.getElementById('totalCost').textContent = totalCost.toFixed(4);
@@ -121,15 +176,37 @@
       }
 
       // Add warning if approaching context window
+      const totalTokens = inputTokens + outputTokens;
       const contextWindow = modelPricing[model].contextWindow;
-      if (tokenCount > contextWindow * 0.9) {
+      if (totalTokens > contextWindow * 0.9) {
         document.querySelector('.results').insertAdjacentHTML('beforeend', `
           <div class="warning">Warning: Approaching model's context window limit (${contextWindow} tokens)</div>
         `);
       }
     }
 
-    document.getElementById('text').addEventListener('input', updateTokenCount);
+    // Mode switching
+    document.querySelectorAll('input[name="mode"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const simpleMode = document.getElementById('simple-mode');
+        const advancedMode = document.getElementById('advanced-mode');
+        
+        if (e.target.value === 'simple') {
+          simpleMode.style.display = 'block';
+          advancedMode.style.display = 'none';
+        } else {
+          simpleMode.style.display = 'none';
+          advancedMode.style.display = 'block';
+        }
+        updateTokenCount();
+      });
+    });
+
+    // Event listeners
+    document.getElementById('inputWordCount').addEventListener('input', updateTokenCount);
+    document.getElementById('outputWordCount').addEventListener('input', updateTokenCount);
+    document.getElementById('inputText').addEventListener('input', updateTokenCount);
+    document.getElementById('multiplier').addEventListener('input', updateTokenCount);
     document.getElementById('model').addEventListener('change', updateTokenCount);
     
     updateTokenCount();
