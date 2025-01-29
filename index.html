@@ -25,10 +25,10 @@
 
     <div class="mode-switch">
       <label>
-        <input type="radio" name="mode" value="simple" checked> Simple
+        <input type="radio" name="mode" value="simple" checked> By word count
       </label>
       <label>
-        <input type="radio" name="mode" value="advanced"> Advanced
+        <input type="radio" name="mode" value="advanced"> By example text
       </label>
     </div>
 
@@ -51,7 +51,7 @@
       
       <div>
         <label for="outputText">Output Text:</label>
-        <textarea id="outputText" placeholder="Enter expected output text here..."></textarea>
+        <textarea id="outputText" placeholder="Enter expected output text here (by default it will be the same as input text)"></textarea>
       </div>
     </div>
 
@@ -148,7 +148,9 @@
         outputTokens = approximateTokenCount(outputWordCount);
       } else {
         const inputText = document.getElementById('inputText').value;
-        const outputText = document.getElementById('outputText').value;
+        const outputTextElem = document.getElementById('outputText');
+        const outputText = outputTextElem.value || inputText;  // Default to input text if output is empty
+        
         inputTokens = approximateTokenCount(inputText);
         outputTokens = approximateTokenCount(outputText);
       }
