@@ -15,13 +15,18 @@
     <div>
       <label for="model">Select Model:</label>
       <select id="model" data-search="true">
-        <option value="gpt-4o">GPT-4o</option>
-        <option value="gpt-4o-mini">GPT-4o-mini</option>
-        <option value="o1">O1</option>
-        <option value="o1-mini">O1-mini</option>
-        <option value="claude-3-opus">Claude 3 Opus</option>
-        <option value="claude-3-sonnet">Claude 3.5 Sonnet</option>
-        <option value="claude-3-haiku">Claude 3.5 Haiku</option>
+        <option value="llama-3-3-70b">Llama 3.3 70B</option>
+        <option value="llama-3-1-70b">Llama 3.1 70B</option>
+        <option value="nova-pro">Nova Pro</option>
+        <option value="gemini-1-5-pro">Gemini 1.5 Pro</option>
+        <option value="mistral-large-2">Mistral Large2 (Nov '24)</option>
+        <option value="deepseek-r1">DeepSeek R1</option>
+        <option value="claude-3-5-sonnet">Anthropic Claude 3.5 Sonnet</option>
+        <option value="claude-3-5-haiku">Anthropic Claude 3.5 Haiku</option>
+        <option value="gpt-4o">OpenAI GPT-4o</option>
+        <option value="gpt-4o-mini">OpenAI GPT-4o-mini</option>
+        <option value="o1-mini">OpenAI O1-mini</option>
+        <option value="o1">OpenAI O1</option>
       </select>
     </div>
 
@@ -87,6 +92,48 @@
     });
 
     const modelPricing = {
+      'llama-3-3-70b': {
+        input: 0.3,
+        output: 1.2,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'llama-3-1-70b': {
+        input: 0.7,
+        output: 2.8,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'nova-pro': {
+        input: 1.4,
+        output: 5.6,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'claude-3-5-haiku': {
+        input: 1.6,
+        output: 6.4,
+        per: 1000000,
+        contextWindow: 200000
+      },
+      'gemini-1-5-pro': {
+        input: 2.2,
+        output: 8.8,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'mistral-large-2': {
+        input: 3,
+        output: 12,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'deepseek-r1': {
+        input: 4,
+        output: 16,
+        per: 1000000,
+        contextWindow: 128000
+      },
       'gpt-4o': {
         input: 2.5,
         output: 10,
@@ -99,35 +146,23 @@
         per: 1000000,
         contextWindow: 128000
       },
-      'o1': {
-        input: 15,
-        output: 60,
-        per: 1000000,
-        contextWindow: 128000
-      },
       'o1-mini': {
         input: 3,
         output: 12,
         per: 1000000,
         contextWindow: 128000
       },
-      'claude-3-opus': {
-        input: 15,
-        output: 75,
+      'claude-3-5-sonnet': {
+        input: 6,
+        output: 24,
         per: 1000000,
         contextWindow: 200000
       },
-      'claude-3-sonnet': {
-        input: 3,
-        output: 15,
+      'o1': {
+        input: 26.3,
+        output: 105.2,
         per: 1000000,
-        contextWindow: 200000
-      },
-      'claude-3-haiku': {
-        input: 0.8,
-        output: 4,
-        per: 1000000,
-        contextWindow: 200000
+        contextWindow: 128000
       }
     };
 
