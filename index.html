@@ -17,6 +17,9 @@
         <option value="gpt-4o-mini">GPT-4o-mini</option>
         <option value="o1">O1</option>
         <option value="o1-mini">O1-mini</option>
+        <option value="claude-3-opus">Claude 3 Opus</option>
+        <option value="claude-3-sonnet">Claude 3.5 Sonnet</option>
+        <option value="claude-3-haiku">Claude 3.5 Haiku</option>
       </select>
     </div>
 
@@ -58,6 +61,24 @@
         output: 12,
         per: 1000000,
         contextWindow: 128000
+      },
+      'claude-3-opus': {
+        input: 15,
+        output: 75,
+        per: 1000000,
+        contextWindow: 200000
+      },
+      'claude-3-sonnet': {
+        input: 3,
+        output: 15,
+        per: 1000000,
+        contextWindow: 200000
+      },
+      'claude-3-haiku': {
+        input: 0.8,
+        output: 4,
+        per: 1000000,
+        contextWindow: 200000
       }
     };
 
