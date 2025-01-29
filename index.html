@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Token Counter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>LLM Token Counter</h1>
+    
+    <div>
+      <label for="model">Select Model:</label>
+      <select id="model">
+        <option value="gpt-4o">GPT-4o</option>
+        <option value="gpt-4o-mini">GPT-4o-mini</option>
+        <option value="o1">O1</option>
+        <option value="o1-mini">O1-mini</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="text">Enter Text:</label>
+      <textarea id="text" placeholder="Enter your text here..."></textarea>
+    </div>
+
+    <div class="results">
+      <div class="result-item">Token Count: <span id="tokenCount">0</span></div>
+      <div class="result-item">Input Cost: $<span id="inputCost">0.00</span></div>
+      <div class="result-item">Output Cost: $<span id="outputCost">0.00</span></div>
+      <div class="result-item">Total Cost: $<span id="totalCost">0.00</span></div>
+    </div>
+  </div>
+
+  <script>
+    const modelPricing = {
+      'gpt-4o': {
+        input: 2.5,
+        output: 10,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'gpt-4o-mini': {
+        input: 0.15,
+        output: 0.6,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'o1': {
+        input: 15,
+        output: 60,
+        per: 1000000,
+        contextWindow: 128000
+      },
+      'o1-mini': {
+        input: 3,
+        output: 12,
+        per: 1000000,
+        contextWindow: 128000
+      }
+    };
+
+    function approximateTokenCount(text) {
+      const E = 2.7182818284590;
+      const SAFETY_MARGIN = 2;
+      
+      // Use 1/e as the conservative constant of proportionality
+      const tokenCount = Math.ceil((text.length / E) + SAFETY_MARGIN);
+      return tokenCount;
+    }
+
+    function updateTokenCount() {
+      const text = document.getElementById('text').value;
+      const model = document.getElementById('model').value;
+      
+      if (!text) {
+        document.getElementById('tokenCount').textContent = '0';
+        document.getElementById('inputCost').textContent = '0.00';
+        document.getElementById('outputCost').textContent = '0.00';
+        document.getElementById('totalCost').textContent = '0.00';
+        return;
+      }
+
+      const tokenCount = approximateTokenCount(text);
+      const pricing = modelPricing[model];
+      const inputCost = (tokenCount / pricing.per) * pricing.input;
+      const outputCost = (tokenCount / pricing.per) * pricing.output;
+      const totalCost = inputCost + outputCost;
+      
+      document.getElementById('tokenCount').textContent = tokenCount;
+      document.getElementById('inputCost').textContent = inputCost.toFixed(4);
+      document.getElementById('outputCost').textContent = outputCost.toFixed(4);
+      document.getElementById('totalCost').textContent = totalCost.toFixed(4);
+
+      // Clear any existing warnings
+      const existingWarning = document.querySelector('.warning');
+      if (existingWarning) {
+        existingWarning.remove();
+      }
+
+      // Add warning if approaching context window
+      const contextWindow = modelPricing[model].contextWindow;
+      if (tokenCount > contextWindow * 0.9) {
+        document.querySelector('.results').insertAdjacentHTML('beforeend', `
+          <div class="warning">Warning: Approaching model's context window limit (${contextWindow} tokens)</div>
+        `);
+      }
+    }
+
+    document.getElementById('text').addEventListener('input', updateTokenCount);
+    document.getElementById('model').addEventListener('change', updateTokenCount);
+    
+    updateTokenCount();
+  </script>
+</body>
+</html> 
