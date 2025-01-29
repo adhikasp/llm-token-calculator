@@ -110,3 +110,50 @@ select, input[type="number"] {
     margin-top: 10px;
     border-radius: 4px;
 }
+
+/* Choices.js custom styling */
+.choices {
+    margin-bottom: 10px;
+}
+
+.choices__inner {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 8px;
+    min-height: 38px;
+}
+
+.choices__input {
+    background: transparent;
+}
+
+.choices__list--dropdown {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.choices__list--dropdown .choices__item {
+    padding: 8px;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background-color: #f5f5f5;
+}
+
+.choices[data-type*="select-one"] .choices__inner {
+    padding-bottom: 6px;
+}
+
+.choices[data-type*="select-one"]:after {
+    border-color: #666 transparent transparent;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+    padding-right: 8px;
+}
+
+.choices__list--dropdown .choices__item--selectable:after {
+    display: none;
+}

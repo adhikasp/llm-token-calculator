@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LLM Token Counter</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -12,7 +14,7 @@
     
     <div>
       <label for="model">Select Model:</label>
-      <select id="model">
+      <select id="model" data-search="true">
         <option value="gpt-4o">GPT-4o</option>
         <option value="gpt-4o-mini">GPT-4o-mini</option>
         <option value="o1">O1</option>
@@ -71,6 +73,19 @@
   </div>
 
   <script>
+    // Initialize Choices.js
+    const modelSelect = new Choices('#model', {
+      searchEnabled: true,
+      searchPlaceholderValue: "Type to search...",
+      placeholder: true,
+      placeholderValue: "Select a model",
+      searchResultLimit: 7,
+      searchFields: ['label', 'value'],
+      fuseOptions: {
+        threshold: 0.3,
+      }
+    });
+
     const modelPricing = {
       'gpt-4o': {
         input: 2.5,
