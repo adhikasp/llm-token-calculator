@@ -71,9 +71,9 @@
       <div class="result-item">Input Token Count: <span id="inputTokenCount">0</span></div>
       <div class="result-item">Output Token Count: <span id="outputTokenCount">0</span></div>
       <div class="result-item">Total Token Count: <span id="totalTokenCount">0</span></div>
-      <div class="result-item">Input Cost: $<span id="inputCost">0.00</span></div>
-      <div class="result-item">Output Cost: $<span id="outputCost">0.00</span></div>
-      <div class="result-item">Total Cost: $<span id="totalCost">0.00</span></div>
+      <div class="result-item">Input Cost: <span id="inputCost">$0.00</span></div>
+      <div class="result-item">Output Cost: <span id="outputCost">$0.00</span></div>
+      <div class="result-item">Total Cost: <span id="totalCost">$0.00</span></div>
     </div>
   </div>
 
@@ -217,9 +217,9 @@
       document.getElementById('inputTokenCount').textContent = inputTokens;
       document.getElementById('outputTokenCount').textContent = outputTokens;
       document.getElementById('totalTokenCount').textContent = inputTokens + outputTokens;
-      document.getElementById('inputCost').textContent = inputCost.toFixed(4);
-      document.getElementById('outputCost').textContent = outputCost.toFixed(4);
-      document.getElementById('totalCost').textContent = totalCost.toFixed(4);
+      document.getElementById('inputCost').textContent = '$' + inputCost.toFixed(4);
+      document.getElementById('outputCost').textContent = '$' + outputCost.toFixed(4);
+      document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(4);
 
       // Clear any existing warnings
       const existingWarning = document.querySelector('.warning');
@@ -258,6 +258,7 @@
     document.getElementById('inputWordCount').addEventListener('input', updateTokenCount);
     document.getElementById('outputWordCount').addEventListener('input', updateTokenCount);
     document.getElementById('inputText').addEventListener('input', updateTokenCount);
+    document.getElementById('outputText').addEventListener('input', updateTokenCount);
     document.getElementById('multiplier').addEventListener('input', updateTokenCount);
     document.getElementById('model').addEventListener('change', updateTokenCount);
     
