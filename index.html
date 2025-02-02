@@ -222,15 +222,19 @@
       document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(4);
 
       // Clear any existing warnings
-      const existingWarning = document.querySelector('.warning');
+      const existingWarning = document.querySelector('.warning, .alert-danger');
       if (existingWarning) {
         existingWarning.remove();
       }
 
-      // Add warning if approaching context window
+      // Add warning if approaching or exceeding context window
       const totalTokens = inputTokens + outputTokens;
       const contextWindow = modelPricing[model].contextWindow;
-      if (totalTokens > contextWindow * 0.9) {
+      if (totalTokens > contextWindow) {
+        document.querySelector('.results').insertAdjacentHTML('beforeend', `
+          <div class="alert-danger">Alert: Token count (${totalTokens}) exceeds model's context window limit of ${contextWindow} tokens</div>
+        `);
+      } else if (totalTokens > contextWindow * 0.8) {
         document.querySelector('.results').insertAdjacentHTML('beforeend', `
           <div class="warning">Warning: Approaching model's context window limit (${contextWindow} tokens)</div>
         `);
